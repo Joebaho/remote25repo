@@ -26,7 +26,6 @@ phases:
 
   post_build:
     commands:
-      commands:
       - echo === THIS IS MY POSTBUILD PART ====
       - echo The build is completed succefully at 'date'... 
 
