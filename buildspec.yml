@@ -1,0 +1,43 @@
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      python: 3.9
+    commands:
+      - pip install aws-sam-cli  # Only needed if using SAM
+      - aws --version
+      - echo === INSTALL CFN-LINT ====
+      - pip install cfn-lint
+
+  pre_build:
+    commands:
+      - echo ==== CHECK IF CFN-LINT WAS INSTALL ====
+      - cfn-lint --version
+      - echo ==== CHECK IF THE TEMPLATE IS CORRECT ====
+      - cfn-lint SampleNetworkCrossStack.yml
+      - cfn-lint InstanceServerCrossStack.yml
+      
+
+  build:
+    commands:
+      - echo "Packaging CloudFormation templates..."
+      - aws cloudformation package \
+          --template-file SampleNetworkCrossStack.yml \
+          --s3-bucket nov-24-staticwebsite-bucket01 \
+          --output-template-file network-artifact.yml
+
+      - aws cloudformation package \
+          --template-file InstanceServerCrossStack.yml \
+          --s3-bucket nov-24-staticwebsite-bucket01 \
+          --output-template-file instance-artifact.yml
+
+  post_build:
+    commands:
+      - echo "Uploading packaged templates to S3..."
+      - aws s3 cp network-artifact.yml s3://nov-24-staticwebsite-bucket01/
+      - aws s3 cp instance-artifact.yml s3://nov-24-staticwebsite-bucket01/
+
+artifacts:
+  files:
+    - network-artifact.yml
+    - instance-artifact.yml
