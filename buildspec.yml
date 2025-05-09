@@ -26,9 +26,9 @@ phases:
 
   post_build:
     commands:
-      - echo "Uploading packaged templates to S3..."
-      - aws s3 cp network-artifact.yml s3://nov-24-staticwebsite-bucket01/
-      - aws s3 cp instance-artifact.yml s3://nov-24-staticwebsite-bucket01/
+      commands:
+      - echo === THIS IS MY POSTBUILD PART ====
+      - echo The build is completed succefully at 'date'... 
 
 artifacts:
   files:
